@@ -1,14 +1,17 @@
-[gd_scene format=3 uid="uid://e3vqb2jqwrui"]
+[gd_scene load_steps=3 format=3 uid="uid://e3vqb2jqwrui"]
 
-[node name="Skill Node" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[ext_resource type="Texture2D" uid="uid://bp7xkcar7k6jo" path="res://icon.svg" id="1_efm6q"]
+[ext_resource type="Script" path="res://skill_node.gd" id="2_ugitj"]
 
-[node name="Button" type="Button" parent="."]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+[node name="SkillNode" type="Button"]
+custom_minimum_size = Vector2(64, 64)
+offset_right = 140.0
+offset_bottom = 136.0
+text = "
+"
+icon = ExtResource("1_efm6q")
+flat = true
+clip_text = true
+script = ExtResource("2_ugitj")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]
