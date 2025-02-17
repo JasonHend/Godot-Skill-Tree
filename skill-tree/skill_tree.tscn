@@ -22,10 +22,10 @@ grow_vertical = 2
 
 [node name="Skill Node" parent="Panel" instance=ExtResource("1_sknkn")]
 layout_mode = 1
-offset_left = 500.0
-offset_top = 487.0
-offset_right = 640.0
-offset_bottom = 623.0
+offset_left = 452.0
+offset_top = 276.0
+offset_right = 592.0
+offset_bottom = 412.0
 price = 1
 purchasable = true
 
