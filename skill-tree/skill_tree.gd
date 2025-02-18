@@ -2,14 +2,28 @@ extends Control
 
 # Public variables to define how currency is managed and root of tree for saving purposes
 @export var currency: int = 0
-@onready var tree_root: Button = get_node("Panel/Skill Node")
+@onready var tree_root: TreeNode = get_node("Panel/Skill Node")
 
 # Path to save data
 const SAVE_PATH := "user://skilltree.save"
 
+# Private array for dynamic saving and loading of tree
+var _all_nodes: Array
+
 # Load the saved tree on ready
 func _ready() -> void:
+	_get_nodes(tree_root)
 	load_tree()
+
+# Populate all nodes array
+func _get_nodes(start_node: TreeNode) -> void:
+	_all_nodes.append(start_node)
+	
+	# Get child nodes and call down to leafs
+	var child_nodes = start_node.get_children()
+	for child in child_nodes:
+		if child is TreeNode:
+			_get_nodes(child)
 
 # Main overload for handling the purchase of nodes
 func handle_node_purchase(skill_reference: String) -> void:
@@ -18,9 +32,6 @@ func handle_node_purchase(skill_reference: String) -> void:
 			_test_skill_unlocked()
 		_:
 			print_debug("No function assigned with purchased node")
-	
-	# Save once a purchase has been made
-	save_tree()
 
 #region Skill Functions
 # INFO Each function in this region is meant to be passed in to handle_node_purchase
@@ -31,41 +42,37 @@ func _test_skill_unlocked() -> void:
 
 #region Save Logic
 # INFO Functions for saving and loading each nodes state
+# Override default quit behavoir to save needed nodes before termination
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		save_tree()
+		get_tree().quit()
+
 func save_tree() -> void:
-	# Reference to all nodes to be saved
-	var tree_nodes = get_tree().get_nodes_in_group("TreeNodes")
-	
 	# File to save to
-	var save_file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var save_file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	
-	for node in tree_nodes:
+	for node in _all_nodes:
 		if node.scene_file_path.is_empty() or !node.has_method("save"):
 			continue
 		
-		# Call save on each node
+		# Call save
 		var node_data = node.call("save")
 		
-		# Format into JSON
+		#Format and write
 		var json_string = JSON.stringify(node_data)
-		
-		# Save and close file
 		save_file.store_line(json_string)
-		save_file.close()
+	
+	save_file.close()
 
 func load_tree() -> void:
 	# Check for file exsistance
 	if not FileAccess.file_exists(SAVE_PATH):
 		return
 	
-	# Loop through nodes and free the ones that will be loaded
-	var tree_nodes = get_tree().get_nodes_in_group("TreeNodes")
-	for node in tree_nodes:
-		node.queue_free()
-	
 	var save_file = FileAccess.open(SAVE_PATH, FileAccess.READ)
 	while save_file.get_position() < save_file.get_length():
 		var json_string = save_file.get_line()
-		
 		# JSON class and parsing
 		var json = JSON.new()
 		
@@ -73,16 +80,13 @@ func load_tree() -> void:
 		if not parse_result == OK:
 			continue
 		
-		#grab data and load into a new object
+		# Grab data and load into a new object
 		var node_data = json.data
 		
-		var new_object = load(node_data["filename"]).instantiate()
-		get_node(node_data["parent"]).add_child(new_object)
-		new_object.position = Vector2(node_data["pos_x"], node_data["pos_y"])
+		# Matching node based on filepath
+		for node in _all_nodes:
+			if node.name == node_data["name"]:
+				node.load_data(node_data)
 		
-		for i in node_data.keys():
-			if i == "filename" or i == "parent" or i == "pos_x" or i == "pos_y":
-				continue
-			new_object.set(i, node_data[i])
 	save_file.close()
 #endregion
