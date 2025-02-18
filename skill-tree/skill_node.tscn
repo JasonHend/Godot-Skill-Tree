@@ -1,15 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://e3vqb2jqwrui"]
 
-[ext_resource type="Texture2D" uid="uid://bp7xkcar7k6jo" path="res://icon.svg" id="1_efm6q"]
+[ext_resource type="Texture2D" uid="uid://bp7xkcar7k6jo" path="res://icon.svg" id="1_juysf"]
 [ext_resource type="Script" path="res://skill_node.gd" id="2_ugitj"]
 
-[node name="SkillNode" type="Button"]
-custom_minimum_size = Vector2(64, 64)
-offset_right = 140.0
-offset_bottom = 136.0
-text = "
-"
-icon = ExtResource("1_efm6q")
+[node name="SkillNode" type="Button" groups=["TreeNodes"]]
+offset_right = 40.0
+offset_bottom = 40.0
+icon = ExtResource("1_juysf")
 flat = true
 clip_text = true
 script = ExtResource("2_ugitj")

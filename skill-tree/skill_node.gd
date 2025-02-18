@@ -21,6 +21,7 @@ func make_children_purchasable() -> void:
 			_child.purchasable = true
 			print_debug(_child.purchasable)
 
+# Handles behavior when the node is pressed
 func _on_pressed() -> void:
 	var payment = 10
 	if purchasable and !_purchased and price < payment:
@@ -31,3 +32,17 @@ func _on_pressed() -> void:
 			_purchased = true
 			_tree_base.handle_node_purchase(skill_refernce)
 			make_children_purchasable()
+
+func save() -> Dictionary:
+	var save_dict = {
+		"filename" : get_scene_file_path(),
+		"parent" : get_parent().get_path(),
+		"pos_x" : position.x,
+		"pos_y" : position.y,
+		"price" : price,
+		"times_purchasable" : times_purchasable,
+		"purchasable" : purchasable,
+		"skill_refernce" : skill_refernce,
+		"purchased" : _purchased
+	}
+	return save_dict

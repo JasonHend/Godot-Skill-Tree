@@ -22,18 +22,18 @@ grow_vertical = 2
 
 [node name="Skill Node" parent="Panel" instance=ExtResource("1_sknkn")]
 layout_mode = 1
-offset_left = 452.0
-offset_top = 276.0
-offset_right = 592.0
-offset_bottom = 412.0
+offset_left = 554.0
+offset_top = 441.0
+offset_right = 594.0
+offset_bottom = 481.0
 price = 1
 purchasable = true
 
-[node name="SkillNode" parent="Panel/Skill Node" instance=ExtResource("1_sknkn")]
+[node name="Skill Node" parent="Panel/Skill Node" instance=ExtResource("1_sknkn")]
 layout_mode = 0
-offset_left = -196.0
-offset_top = -175.0
-offset_right = -56.0
-offset_bottom = -39.0
+offset_left = -359.0
+offset_top = -262.0
+offset_right = -223.0
+offset_bottom = -126.0
 price = 1
 skill_refernce = "Test"
