@@ -2,7 +2,7 @@ extends Button
 
 class_name TreeNode
 # Public variables that determine acquisition requirements
-@export var price: int = 0
+@export var price: int = 1
 @export var times_purchasable: int = 1
 @export var purchasable: bool = false
 @export var skill_reference: String = "FillIn"
@@ -29,8 +29,9 @@ func make_children_purchasable() -> void:
 
 # Handles behavior when the node is pressed
 func _on_pressed() -> void:
-	var payment = 10
-	if purchasable and !purchased and price < payment:
+	var payment = _tree_base.currency
+	if purchasable and !purchased and price <= payment:
+		_tree_base.currency -= price
 		times_purchased += 1
 		if times_purchased < times_purchasable:
 			_tree_base.handle_node_purchase(skill_reference)
@@ -45,8 +46,6 @@ func _on_pressed() -> void:
 func save() -> Dictionary:
 	var save_dict = {
 		"name" : self.name,
-		"price" : price,
-		"times_purchasable" : times_purchasable,
 		"times_purchased" : times_purchased,
 		"purchasable" : purchasable,
 		"purchased" : purchased
@@ -54,8 +53,6 @@ func save() -> Dictionary:
 	return save_dict
 
 func load_data(node_data) -> void:
-	self.price = node_data["price"]
-	self.times_purchasable = node_data["times_purchasable"]
 	self.times_purchased = node_data["times_purchased"]
 	self.purchasable = node_data["purchasable"]
 	self.purchased = node_data["purchased"]

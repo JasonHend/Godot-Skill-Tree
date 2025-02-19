@@ -1,8 +1,8 @@
 extends Control
 
 # Public variables to define how currency is managed and root of tree for saving purposes
-@export var currency: int = 0
-@onready var tree_root: TreeNode = get_node("Panel/Skill Node")
+@export var currency: int = 10
+@onready var tree_root: TreeNode = get_node("Panel/1")
 
 # Path to save data
 const SAVE_PATH := "user://skilltree.save"
@@ -10,9 +10,13 @@ const SAVE_PATH := "user://skilltree.save"
 # Private array for dynamic saving and loading of tree
 var _all_nodes: Array
 
+# Label for showing currency
+@onready var _currency_label: Label = get_node("Panel/Label")
+
 # Load the saved tree on ready
 func _ready() -> void:
 	_get_nodes(tree_root)
+	_currency_label.text = "Currency: %d" % currency
 	load_tree()
 
 # Populate all nodes array
@@ -27,6 +31,7 @@ func _get_nodes(start_node: TreeNode) -> void:
 
 # Main overload for handling the purchase of nodes
 func handle_node_purchase(skill_reference: String) -> void:
+	_currency_label.text = "Currency: %d" % currency
 	match skill_reference:
 		"FillIn":
 			_test_skill_unlocked()
